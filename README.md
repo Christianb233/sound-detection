@@ -10,7 +10,7 @@ Connexion Internet
 Téléchargez et installez Raspberry Pi OS sur votre carte SD.
 Insérez la carte SD dans la Raspberry Pi et démarrez-la.
 Connectez-vous à la Raspberry Pi (par défaut, utilisateur : pi, mot de passe : raspberry).
-Exécutez sudo raspi-config pour configurer le Wi-Fi, changer le mot de passe, etc.
+Exécutez 'sudo raspi-config' pour configurer le Wi-Fi, changer le mot de passe, etc.
 Étape 2 : Installation et configuration du Respeaker 4-array Seed
 
 Connectez le Respeaker 4-array Seed à votre Raspberry Pi.
