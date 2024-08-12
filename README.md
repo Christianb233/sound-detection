@@ -5,54 +5,66 @@ Raspberry Pi 3B+
 Microphone Respeaker 4-array Seed
 Carte SD (min. 8 Go)
 Connexion Internet
-Étape 1 : Configuration initiale de la Raspberry Pi
+
+# Étape 1 : Configuration initiale de la Raspberry Pi
 
 Téléchargez et installez Raspberry Pi OS sur votre carte SD.
 Insérez la carte SD dans la Raspberry Pi et démarrez-la.
 Connectez-vous à la Raspberry Pi (par défaut, utilisateur : pi, mot de passe : raspberry).
-Exécutez 'sudo raspi-config' pour configurer le Wi-Fi, changer le mot de passe, etc.
-Étape 2 : Installation et configuration du Respeaker 4-array Seed
+Exécutez `sudo raspi-config` pour configurer le Wi-Fi, changer le mot de passe, etc.
+
+# Étape 2 : Installation et configuration du Respeaker 4-array Seed
 
 Connectez le Respeaker 4-array Seed à votre Raspberry Pi.
 Ouvrez un terminal et exécutez :
-sudo apt-get update
+`sudo apt-get update
 sudo apt-get install git
 git clone https://github.com/respeaker/seeed-voicecard.git
 cd seeed-voicecard
 sudo ./install.sh
-sudo reboot
-Après le redémarrage, vérifiez que le microphone est détecté :
-arecord -l
-Étape 3 : Installation des dépendances
+sudo reboot`
 
-sudo apt-get install python3-pip portaudio19-dev
+Après le redémarrage, vérifiez que le microphone est détecté :
+`arecord -l`
+
+# Étape 3 : Installation des dépendances
+
+`sudo apt-get install python3-pip portaudio19-dev
 pip3 install pyaudio numpy paho-mqtt scipy sounddevice
 pip3 install -U scikit-learn
-pip3 install pyAudioAnalysis
-Étape 4 : Collecte des échantillons audio
+pip3 install pyAudioAnalysis`
+
+# Étape 4 : Collecte des échantillons audio
 
 Créez deux répertoires :
-mkdir sonnette
-mkdir non-sonnette
+`mkdir sonnette
+mkdir non-sonnette`
+
 Enregistrez 10-15 échantillons de sonnette dans le répertoire « sonnette » :
-arecord -d 2 -f cd -t wav sonnette/sonnette_01.wav
+`arecord -d 2 -f cd -t wav sonnette/sonnette_01.wav`
+
 Répétez cette commande pour chaque échantillon, en changeant le nom du fichier.
 
 Enregistrez 10-15 échantillons de bruits environnants dans le répertoire « non-sonnette » de la même manière.
-Étape 5 : Entraînement du modèle
 
-Créez un script Python nommé train_model.py :
+# Étape 5 : Entraînement du modèle
 
+Créez un script Python nommé `train_model.py` :
+
+```
 from pyAudioAnalysis import audioTrainTest as aT
 
 aT.extract_features_and_train(["sonnette", "non-sonnette"], 1.0, 1.0, aT.shortTermWindow, aT.shortTermStep, "svm", "doorbell_model", False)
+```
+
 Exécutez le script :
 
-python3 train_model.py
-Étape 6 : Création du script de détection
+`python3 train_model.py`
 
-Créez un fichier doorbell_detection.py :
+# Étape 6 : Création du script de détection
 
+Créez un fichier `doorbell_detection.py` :
+```
 import pyaudio
 import numpy as np
 import time
@@ -206,16 +218,21 @@ Activez et démarrez le service :
 sudo systemctl daemon-reload
 sudo systemctl enable doorbell-detection.service
 sudo systemctl start doorbell-detection.service
-Étape 8 : Configuration de Home Assistant
+```
+
+# Étape 8 : Configuration de Home Assistant
 
 Assurez-vous que l’intégration MQTT est configurée dans Home Assistant.
 Ajoutez un capteur binaire dans votre fichier configuration.yaml :
-binary_sensor:
+```binary_sensor:
   - platform: mqtt
     name: "Sonnette"
     state_topic: "doorbell/state"
     payload_on: "on"
     payload_off: "off"
     device_class: sound
+```
+
 Redémarrez Home Assistant pour appliquer les changements.
+
 Ce tutoriel complet couvre toutes les étapes nécessaires, de la configuration initiale à l’entraînement du modèle avec pyAudioAnalysis et à la mise en place du système de détection. N’oubliez pas d’ajuster les paramètres (comme MIN_PROB_THRESHOLD) en fonction de vos besoins spécifiques et des résultats obtenus lors des tests.
