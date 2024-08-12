@@ -1,5 +1,7 @@
-# sound-detection
-Détection de sonnette avec Raspberry Pi, Respeaker 4-array Seed et Home AssistantMatériel nécessaire :
+# sound-detection with Home Assistant
+Détection de sonnette avec Raspberry Pi, Respeaker 4-array Seed et Home Assistant
+
+Matériel nécessaire :
 
 Raspberry Pi 3B+
 Microphone Respeaker 4-array Seed
