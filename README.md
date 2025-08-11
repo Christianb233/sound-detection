@@ -197,8 +197,11 @@ finally:
     p.terminate()
     client.loop_stop()
     client.disconnect()
-Étape 7 : Configuration du service systemdCréez un fichier /etc/systemd/system/doorbell-detection.service :
+```
 
+# Étape 7 : Configuration du service systemdCréez un fichier /etc/systemd/system/doorbell-detection.service :
+
+```
 [Unit]
 Description=Doorbell Detection Service
 After=network.target
